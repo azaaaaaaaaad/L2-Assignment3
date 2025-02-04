@@ -12,7 +12,6 @@ const createBlogIntoDB = async (password: string, payload: TBlog) => {
   const result = await Blog.create(payload);
   return result;
 
-  //bhugichugi check postman
 };
 
 export const BolgServices = {

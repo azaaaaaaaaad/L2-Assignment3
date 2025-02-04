@@ -1,26 +1,30 @@
-import { model, Schema } from "mongoose";
-import { TBlog } from "./blog.interface";
+import { model, Schema } from 'mongoose';
+import { TBlog } from './blog.interface';
 
-const blogSchema = new Schema<TBlog>({
+const blogSchema = new Schema<TBlog>(
+  {
     title: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
-    content:{
-        type: String,
-        required: true
+    content: {
+      type: String,
+      required: true,
     },
-    author:{
-        type: Schema.Types.ObjectId,
-        required: true,
-        ref: 'User'
+    author: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: 'User',
     },
     isPublished: {
-        type: Boolean,
-        required: true
-    }
-},{
-    timestamps: true
-})
+      type: Boolean,
+      default: true,
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
 
-export const Blog = model('Blog', blogSchema)
+export const Blog = model('Blog', blogSchema);
