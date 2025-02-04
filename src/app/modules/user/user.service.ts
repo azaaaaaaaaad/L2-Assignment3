@@ -6,7 +6,12 @@ const createUserIntoDB = async(payload: TUser)=>{
     return result
 }
 
+const createLogin = async()=> {
+
+}
+
 
 export const UserServices = {
-    createUserIntoDB
+    createUserIntoDB,
+    createLogin
 }

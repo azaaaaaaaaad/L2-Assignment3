@@ -10,4 +10,10 @@ export type TUser = {
     updatedAt: Date
 }
 
+
+export type TLoginUser = {
+    email: string,
+    password: string,
+}
+
 export type TUserRole = keyof typeof USER_ROLE

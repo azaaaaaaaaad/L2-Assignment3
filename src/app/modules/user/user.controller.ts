@@ -8,12 +8,21 @@ const createUser = catchAsync(async (req, res) => {
   const result = await UserServices.createUserIntoDB(payload);
   sendResponse(res, {
     success: true,
-    message: 'user is created successful',
-    statusCode: httpStatus.OK,
-    data: result,
+    message: 'user registered successful',
+    statusCode: httpStatus.CREATED,
+    data: {
+      _id: result._id,
+      name: result.name,
+      email: result.email,
+    },
   });
 });
 
+const loginUser = catchAsync(async(req,res)=> {
+
+})
+
 export const UserControllers = {
   createUser,
+  loginUser
 };
