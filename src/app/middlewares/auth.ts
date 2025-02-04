@@ -28,36 +28,35 @@ const auth = (...requiredRoles: TUserRole[]) => {
       config.jwt_access_secret as string,
     ) as JwtPayload;
 
-    const { userId, role, iat } = decoded;
+    const {
+      userId,
+      role,
+      //  iat
+    } = decoded;
 
     const isUserExist = await User.findOne({ id: userId }).select('+password');
     if (!isUserExist) {
       throw new AppError(httpStatus.NOT_FOUND, 'user not found');
     }
 
-    const isDeleted = isUserExist?.isDeleted;
-    if (isDeleted) {
-      throw new AppError(httpStatus.FORBIDDEN, 'user is deleted');
-    }
-
-    const userStatus = isUserExist?.status;
-    if (userStatus === 'blocked') {
+    const userStatus = isUserExist?.isBlocked;
+    if (userStatus === true) {
       throw new AppError(httpStatus.FORBIDDEN, 'user is blocked');
     }
 
     // Validate if JWT is still valid after password change
-    if (isUserExist.passwordChangedAt && iat) {
-      const isTokenExpired = isJWTIssuedBeforePasswordChanged(
-        isUserExist.passwordChangedAt,
-        iat,
-      );
-      if (isTokenExpired) {
-        throw new AppError(
-          httpStatus.UNAUTHORIZED,
-          'Token expired due to password change',
-        );
-      }
-    }
+    // if (isUserExist.passwordChangedAt && iat) {
+    //   const isTokenExpired = isJWTIssuedBeforePasswordChanged(
+    //     isUserExist.passwordChangedAt,
+    //     iat,
+    //   );
+    //   if (isTokenExpired) {
+    //     throw new AppError(
+    //       httpStatus.UNAUTHORIZED,
+    //       'Token expired due to password change',
+    //     );
+    //   }
+    // }
 
     if (requiredRoles && !requiredRoles.includes(role)) {
       throw new AppError(httpStatus.UNAUTHORIZED, `you are not  authorized`);
