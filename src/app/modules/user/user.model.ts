@@ -6,7 +6,6 @@ const userSchema = new Schema<TUser>(
     name: {
       type: String,
       required: true,
-      trim: true,
     },
     email: {
       type: String,
@@ -34,4 +33,4 @@ const userSchema = new Schema<TUser>(
   },
 );
 
-export const User = model<TUser>('User',userSchema)
+export const User = model<TUser>('User', userSchema);
