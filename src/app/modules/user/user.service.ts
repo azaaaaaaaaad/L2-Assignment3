@@ -4,6 +4,7 @@ import { User } from './user.model';
 import httpStatus from 'http-status';
 import bcrypt from 'bcrypt';
 import config from '../../config';
+import { createToken } from './user.utils';
 
 const createUserIntoDB = async (payload: TUser) => {
   const hashedPassword = await bcrypt.hash(
@@ -36,7 +37,18 @@ const loginUser = async (payload: TLoginUser) => {
     throw new AppError(httpStatus.BAD_REQUEST, 'password did not matched');
   }
 
-  return {};
+  const jwtPayload = {
+    userId: isUserExist?.id,
+    role: isUserExist?.role,
+  };
+
+  const accessToken = createToken(
+    jwtPayload,
+    config.jwt_access_secret as string,
+    config.jwt_access_expires_in as string,
+  );
+
+  return { accessToken };
 };
 
 export const UserServices = {
