@@ -12,7 +12,7 @@ const createUserIntoDB = async (payload: TUser) => {
     Number(config.bcrypt_salt_rounds),
   );
 
-  payload?.password = hashedPassword;
+  payload.password  = hashedPassword;
 
   const result = await User.create(payload);
   return result;
