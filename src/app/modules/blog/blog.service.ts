@@ -1,4 +1,6 @@
+import QueryBuilder from '../../builder/QueryBuilder';
 import { TUser } from '../user/user.interface';
+import { blogSearchableFields } from './blog.constant';
 import { TBlog } from './blog.interface';
 import { Blog } from './blog.model';
 
@@ -41,8 +43,17 @@ const deleteBlogFromDB = async (id: string) => {
   return result
 }
 
-const getAllBlogsFromDB = async () => {
-  const result = await Blog.find()
+const getAllBlogsFromDB = async (query: Record<string, unknown>) => {
+
+  const blogQuery = new QueryBuilder(
+    Blog.find(),
+    query,
+  ).search(blogSearchableFields)
+    .sort()
+    .filter()
+
+
+  const result = blogQuery.modelQuery
   return result
 }
 
