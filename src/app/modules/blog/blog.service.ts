@@ -51,7 +51,19 @@ const updateBlogIntoDB = async (id: string, payload: Partial<TBlog> = {}, userId
   return result;
 };
 
-const deleteBlogFromDB = async (id: string) => {
+const deleteBlogFromDB = async (id: string, userId: string) => {
+
+  // Step 1: Find the blog to verify ownership
+  const blog = await Blog.findById(id);
+  if (!blog) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Blog not found');
+  }
+
+  // Step 2: Check if the logged-in user is the author
+  if (blog.author.toString() !== userId) {
+    throw new AppError(httpStatus.FORBIDDEN, 'You are not authorized to delete this blog');
+  }
+
   const result = await Blog.findByIdAndDelete(id)
   return result
 }
