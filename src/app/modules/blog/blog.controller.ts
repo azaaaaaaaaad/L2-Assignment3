@@ -1,12 +1,12 @@
 import catchAsync from '../../utils/catchAsync';
 import httpStatus from 'http-status';
-import { BolgServices } from './blog.service';
+import { BlogServices } from './blog.service';
 import sendResponse from '../../utils/sendResponse';
 
 const createBlog = catchAsync(async (req, res) => {
   const { password, ...blogData } = req.body;
   console.log('blogData:', blogData); // Debug log
-  const result = await BolgServices.createBlogIntoDB(password, blogData);
+  const result = await BlogServices.createBlogIntoDB(password, blogData);
   sendResponse(res, {
     success: true,
     message: 'Blog created successfully',
@@ -15,6 +15,18 @@ const createBlog = catchAsync(async (req, res) => {
   });
 });
 
+const updateBlog = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await BlogServices.updateBlogIntoDB(id, req.body);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Blog updated successfully',
+    data: result,
+  });
+});
+
 export const BlogControllers = {
   createBlog,
+  updateBlog,
 };

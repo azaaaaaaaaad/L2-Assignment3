@@ -11,9 +11,32 @@ const createBlogIntoDB = async (password: string, payload: TBlog) => {
 
   const result = await Blog.create(payload);
   return result;
-
 };
 
-export const BolgServices = {
+
+const updateBlogIntoDB = async (id: string, payload: Partial<TBlog> = {}) => {
+  const { title, content, ...remainingData } = payload;
+
+  const modifiedUpdatedData: Record<string, unknown> = {
+    ...remainingData,
+  };
+
+  if (title) {
+    modifiedUpdatedData['title'] = title;
+  }
+
+  if (content) {
+    modifiedUpdatedData['content'] = content;
+  }
+
+  const result = await Blog.findByIdAndUpdate(id, modifiedUpdatedData, {
+    new: true,
+    runValidators: true,
+  });
+  return result;
+};
+
+export const BlogServices = {
   createBlogIntoDB,
+  updateBlogIntoDB,
 };

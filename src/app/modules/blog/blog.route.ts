@@ -10,4 +10,10 @@ BlogRoutes.post(
   BlogControllers.createBlog,
 );
 
+BlogRoutes.patch(
+  '/:id',
+  validateRequest(BlogValidations.updateBlogValidationSchema),
+  BlogControllers.updateBlog,
+);
+
 export default BlogRoutes;
