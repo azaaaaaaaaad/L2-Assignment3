@@ -18,10 +18,21 @@ export const isJWTIssuedBeforePasswordChanged = (
 
 const auth = (...requiredRoles: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization;
-    if (!token) {
+    const authHeader = req.headers.authorization;
+
+
+    if (!authHeader) {
       throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized');
     }
+    // Extracting only the token (removing 'Bearer')
+    const token = authHeader.split(' ')[1];
+
+    if (!token) {
+      throw new AppError(httpStatus.UNAUTHORIZED, 'Token not found');
+    }
+
+    // console.log('Token from auth.ts =>', token);
+
 
     const decoded = jwt.verify(
       token,
@@ -33,8 +44,11 @@ const auth = (...requiredRoles: TUserRole[]) => {
       role,
       //  iat
     } = decoded;
+    // console.log('decoded =>', decoded);
 
-    const isUserExist = await User.findOne({ id: userId }).select('+password');
+    const isUserExist = await User.findById(userId);
+    // console.log('token from auth ts', isUserExist);
+
     if (!isUserExist) {
       throw new AppError(httpStatus.NOT_FOUND, 'user not found');
     }
@@ -62,7 +76,9 @@ const auth = (...requiredRoles: TUserRole[]) => {
       throw new AppError(httpStatus.UNAUTHORIZED, `you are not  authorized`);
     }
 
-    req.user = decoded as JwtPayload;
+    // req.user = decoded as JwtPayload;
+    req.user = { id: userId, role };
+
     next();
   });
 };

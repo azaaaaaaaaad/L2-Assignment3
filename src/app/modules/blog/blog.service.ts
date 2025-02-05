@@ -1,8 +1,10 @@
 import QueryBuilder from '../../builder/QueryBuilder';
+import AppError from '../../errors/AppError';
 import { TUser } from '../user/user.interface';
 import { blogSearchableFields } from './blog.constant';
 import { TBlog } from './blog.interface';
 import { Blog } from './blog.model';
+import httpStatus from 'http-status'
 
 const createBlogIntoDB = async (password: string, payload: TBlog) => {
   const userData: Partial<TUser> = {};
@@ -16,7 +18,18 @@ const createBlogIntoDB = async (password: string, payload: TBlog) => {
 };
 
 
-const updateBlogIntoDB = async (id: string, payload: Partial<TBlog> = {}) => {
+const updateBlogIntoDB = async (id: string, payload: Partial<TBlog> = {}, userId: string) => {
+
+  // Step 1: Find the blog to verify ownership
+  const blog = await Blog.findById(id);
+  if (!blog) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Blog not found');
+  }
+
+  // Step 2: Check if the logged-in user is the author
+  if (blog.author.toString() !== userId) {
+    throw new AppError(httpStatus.FORBIDDEN, 'You are not authorized to update this blog');
+  }
   const { title, content, ...remainingData } = payload;
 
   const modifiedUpdatedData: Record<string, unknown> = {

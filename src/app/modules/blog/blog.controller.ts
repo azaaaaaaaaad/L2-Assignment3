@@ -17,7 +17,9 @@ const createBlog = catchAsync(async (req, res) => {
 
 const updateBlog = catchAsync(async (req, res) => {
   const { id } = req.params;
-  const result = await BlogServices.updateBlogIntoDB(id, req.body);
+  const { blog } = req.body;
+  const userId = req.user.id;
+  const result = await BlogServices.updateBlogIntoDB(id, blog, userId);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
