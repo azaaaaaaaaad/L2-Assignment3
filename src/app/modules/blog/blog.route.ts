@@ -21,4 +21,6 @@ BlogRoutes.delete(
   BlogControllers.deleteBlog,
 );
 
+BlogRoutes.get('/', BlogControllers.getAllBlogs)
+
 export default BlogRoutes;
