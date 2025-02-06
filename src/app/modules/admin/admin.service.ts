@@ -1,4 +1,5 @@
 import AppError from "../../errors/AppError";
+import { Blog } from "../blog/blog.model";
 import { User } from "../user/user.model";
 import httpStatus from 'http-status';
 
@@ -18,7 +19,18 @@ const blockUser = async (userId: string) => {
     return user
 }
 
+const deleteBlog = async (id: string) => {
+    const blog = await Blog.findById(id)
+    if (!blog) {
+        throw new AppError(httpStatus.NOT_FOUND, 'blog not found')
+    }
+
+    const result = await Blog.findByIdAndDelete(id)
+    return result
+}
+
 
 export const AdminServices = {
-    blockUser
+    blockUser,
+    deleteBlog
 }
